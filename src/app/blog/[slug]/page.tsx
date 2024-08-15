@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
-import { CustomMDX } from '@/app/blog/components/mdx'
-import { formatDate, getBlogPosts } from '@/app/blog/utils'
+import { CustomMDX } from '@/app/components/mdx'
+import { formatDate, getPosts } from '@/app/utils'
 import { Avatar, Button, Flex, Heading, Text } from '@/once-ui/components'
 
 import { person } from '@/app/resources/content'
@@ -12,7 +12,7 @@ interface BlogParams {
 }
 
 export async function generateStaticParams() {
-	let posts = getBlogPosts()
+	let posts = getPosts(['src', 'app', 'blog', 'posts'])
 
 	return posts.map((post) => ({
 		slug: post.slug,
@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: BlogParams) {
-	let post = getBlogPosts().find((post) => post.slug === params.slug)
+	let post = getPosts().find((post) => post.slug === params.slug)
 	if (!post) {
 		return
 	}
@@ -49,7 +49,7 @@ export function generateMetadata({ params }: BlogParams) {
 }
 
 export default function Blog({ params }: BlogParams) {
-	let post = getBlogPosts().find((post) => post.slug === params.slug)
+	let post = getPosts(['src', 'app', 'blog', 'posts']).find((post) => post.slug === params.slug)
 
 	if (!post) {
 		notFound()

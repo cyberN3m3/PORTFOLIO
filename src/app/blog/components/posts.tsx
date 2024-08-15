@@ -1,10 +1,10 @@
-import { formatDate, getBlogPosts } from '@/app/blog/utils'
+import { formatDate, getPosts } from '@/app/utils'
 import { Flex, Heading, SmartLink, Text } from '@/once-ui/components'
 
 import styles from '@/app/blog/components/Posts.module.scss'
 
 export function BlogPosts() {
-    let allBlogs = getBlogPosts()
+    let allBlogs = getPosts(['src', 'app', 'blog', 'posts'])
 
     return (
         <Flex
