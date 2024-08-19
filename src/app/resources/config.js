@@ -1,3 +1,5 @@
+const baseURL = 'nextjs-portfolio.up.railway.app'
+
 const routes = {
     '/':        true,
     '/about':   true,
@@ -37,8 +39,11 @@ const display = {
 
 const mailchimp = {
     action: 'https://url/subscribe/post?parameters',
+    effects: {
+        gradient: true,
+        dots:     false,
+        lines:    true,
+    }
 }
-
-const baseURL = 'nextjs-portfolio.up.railway.app'
 
 export { routes, protectedRoutes, effects, style, display, mailchimp, baseURL };
