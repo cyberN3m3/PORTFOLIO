@@ -179,6 +179,7 @@ export interface About extends BasePageConfig {
       description: React.ReactNode;
     }>;
   };
+  certifications: Certifications;
   /** Technical skills section */
   technical: {
     /** Whether to display technical skills section */
@@ -237,4 +238,46 @@ export interface Gallery extends BasePageConfig {
     /** Image orientation (horizontal/vertical) */
     orientation: string;
   }>;
+
+}
+// ============================================
+// ADD THIS INTERFACE
+// ============================================
+export interface Certificate {
+  name: string;
+  issuer: string;
+  date: string;
+  status: "Certified" | "In Progress" | "Studying" | "Planned";
+  credentialId?: string;
+  credentialUrl?: string;
+  badge: string; // URL to badge image
+  description?: string;
+}
+
+export interface Certifications {
+  display: boolean;
+  title: string;
+  certificates: Certificate[];
+}
+/**
+ * Represents a professional certificate or license.
+ */
+export interface Certificate {
+  name: string;
+  issuer: string;
+  date: string;
+  status: "Certified" | "In Progress" | "Studying" | "Planned";
+  credentialId?: string;
+  credentialUrl?: string;
+  badge: string; // URL to badge image
+  description?: string;
+}
+
+/**
+ * Certifications Section
+ */
+export interface Certifications {
+  display: boolean;
+  title: string;
+  certificates: Certificate[];
 }
