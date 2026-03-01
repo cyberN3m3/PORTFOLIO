@@ -45,6 +45,11 @@ export default function About() {
       items: about.studies.institutions.map((institution) => institution.name),
     },
     {
+    title: about.certifications.title,
+    display: about.certifications.display,
+    items: about.certifications.certificates.map((cert) => cert.name),
+  },
+    {
       title: about.technical.title,
       display: about.technical.display,
       items: about.technical.skills.map((skill) => skill.title),
@@ -275,6 +280,119 @@ export default function About() {
                     <Text variant="heading-default-xs" onBackground="neutral-weak">
                       {institution.description}
                     </Text>
+                  </Column>
+                ))}
+              </Column>
+            </>
+          )}
+          {about.certifications.display && (
+            <>
+              <Heading
+                as="h2"
+                id={about.certifications.title}
+                variant="display-strong-s"
+                marginBottom="m"
+              >
+                {about.certifications.title}
+              </Heading>
+
+              <Column fillWidth gap="l" marginBottom="40">
+                {about.certifications.certificates.map((cert, index) => (
+                  <Column
+                    key={index}
+                    fillWidth
+                    gap="16"
+                    padding="24"
+                    border="neutral-medium"
+                    radius="l"
+                    background="surface"
+                  >
+                    {/* Certificate Header */}
+                    <Row fillWidth gap="16" vertical="center">
+                      {/* Badge Image */}
+                      <img
+                        src={cert.badge}
+                        alt={cert.name}
+                        style={{
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "contain",
+                        }}
+                      />
+
+                      {/* Certificate Info */}
+                      <Column fillWidth gap="8">
+                        <Heading as="h3" variant="heading-strong-m">
+                          {cert.name}
+                        </Heading>
+                        <Text variant="body-default-s" onBackground="neutral-weak">
+                          {cert.issuer} • {cert.date}
+                        </Text>
+
+                        {/* Status Badge */}
+                        <Row gap="8" vertical="center">
+                          <span
+                            style={{
+                              display: "inline-block",
+                              padding: "4px 12px",
+                              borderRadius: "100px",
+                              fontSize: "12px",
+                              fontWeight: "600",
+                              backgroundColor:
+                                cert.status === "Certified"
+                                  ? "#10b981"
+                                  : cert.status === "In Progress"
+                                  ? "#f59e0b"
+                                  : cert.status === "Studying"
+                                  ? "#3b82f6"
+                                  : "#6b7280",
+                              color: "white",
+                            }}
+                          >
+                            {cert.status}
+                          </span>
+
+                          {/* Credential ID (if certified) */}
+                          {cert.credentialId && (
+                            <Text variant="body-default-xs" onBackground="neutral-weak">
+                              ID: {cert.credentialId}
+                            </Text>
+                          )}
+                        </Row>
+                      </Column>
+                    </Row>
+
+                    {/* Description */}
+                    {cert.description && (
+                      <Text variant="body-default-m" onBackground="neutral-medium">
+                        {cert.description}
+                      </Text>
+                    )}
+
+                    {/* Verify Button */}
+                    {cert.credentialUrl && (
+                      <a
+                        href={cert.credentialUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "8px 16px",
+                          backgroundColor: "transparent",
+                          border: "1px solid currentColor",
+                          borderRadius: "8px",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          textDecoration: "none",
+                          transition: "all 0.2s",
+                        }}
+                        className="hover:bg-accent hover:text-white"
+                      >
+                        Verify Credential →
+                      </a>
+                    )}
                   </Column>
                 ))}
               </Column>
