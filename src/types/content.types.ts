@@ -229,6 +229,7 @@ export interface Work extends BasePageConfig {}
  * @description Configuration for the Gallery page, including metadata, navigation label, and image list.
  */
 export interface Gallery extends BasePageConfig {
+  display?: boolean;
   /** List of images in the gallery */
   images: Array<{
     /** Image source path */
