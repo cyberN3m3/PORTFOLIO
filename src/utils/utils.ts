@@ -10,6 +10,10 @@ type Team = {
 };
 
 type Metadata = {
+  demo: any;
+  github: any;
+  websiteUrl: any;
+  githubUrl: any;
   title: string;
   subtitle?: string;
   publishedAt: string;
@@ -49,6 +53,10 @@ function readMDXFile(filePath: string) {
     tag: data.tag || [],
     team: data.team || [],
     link: data.link || "",
+    websiteUrl: undefined,
+    githubUrl: undefined,
+    demo: undefined,
+    github: undefined
   };
 
   return { metadata, content };

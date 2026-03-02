@@ -1,5 +1,7 @@
 import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
-import { Line, Row, Text } from "@once-ui-system/core";
+import { Icon, Line, Row, Text } from "@once-ui-system/core";
+import { DiAws } from "react-icons/di";
+import { SiAmazon } from "react-icons/si";
 
 const person: Person = {
   firstName: "Chineme",
@@ -13,7 +15,7 @@ const person: Person = {
 };
 
 const newsletter: Newsletter = {
-  display: true,
+  display: false,
   title: <>Subscribe to My Newsletter</>,
   description: <>My weekly newsletter about creativity and engineering</>,
 };
@@ -57,17 +59,17 @@ const home: Home = {
   description: `Portfolio website showcasing my work as a ${person.role}`,
   headline: <>Automating Cloud Architecture for Reliability</>,
   featured: {
-    display: true,
+   display: true,
     title: (
       <Row gap="12" vertical="center">
-        <strong className="ml-4">Once UI</strong>{" "}
+
         <Line background="brand-alpha-strong" vert height="20" />
         <Text marginRight="4" onBackground="brand-medium">
-          Featured work
+          AWS Certified Solutions Architect
         </Text>
       </Row>
     ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    href: "https://www.credly.com/badges/a5a7f2b8-e8fc-44a8-a28d-c7e28c874619/public_url",
   },
   subline: (
     <>
@@ -97,7 +99,7 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        Chineme is a Certified Cloud Engineer passionate about transforming complex infrastructure challenges into scalable, secure, and efficient cloud solutions. 
+        Chineme a Certified Cloud Engineer passionate about transforming complex infrastructure challenges into scalable, secure, and efficient cloud solutions. 
         His work spans AWS architecture, Infrastructure as Code, DevOps practices, and the convergence of security and cloud technologies.
         
 
@@ -188,7 +190,7 @@ const about: About = {
         date: "2025",
         status: "Certified",
         credentialId: "a5a7f2b8-e8fc-44a8-a28d-c7e28c874619", // Add once you pass
-        credentialUrl: "https://www.credly.com/earner/earned/badge/a5a7f2b8-e8fc-44a8-a28d-c7e28c874619", // Add Credly link once you pass
+        credentialUrl: "https://www.credly.com/badges/a5a7f2b8-e8fc-44a8-a28d-c7e28c874619/public_url", // Add Credly link once you pass
         badge: "https://images.credly.com/size/340x340/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png",
         description: "Demonstrates expertise in designing distributed systems on AWS.",
       },
@@ -198,7 +200,7 @@ const about: About = {
         date: "2025",
         status: "Certified",
         credentialId: "02dc5546-e322-4ee5-a7f3-45e9032938f0",
-        credentialUrl: "https://www.credly.com/earner/earned/badge/02dc5546-e322-4ee5-a7f3-45e9032938f0",
+        credentialUrl: "https://www.credly.com/badges/02dc5546-e322-4ee5-a7f3-45e9032938f0",
         badge: "https://images.credly.com/size/340x340/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png",
         description: "Validates foundational understanding of AWS Cloud.",
       },
@@ -209,7 +211,7 @@ const about: About = {
         date: "2024",
         status: "Certified",
         credentialId: "678f0869-b35b-40c5-9a8a-06d414297505",
-        credentialUrl: "https://www.credly.com/earner/earned/badge/678f0869-b35b-40c5-9a8a-06d414297505",
+        credentialUrl: "https://www.credly.com/badges/678f0869-b35b-40c5-9a8a-06d414297505",
         badge: "https://images.credly.com/size/160x160/images/80d8a06a-c384-42bf-ad36-db81bce5adce/blob",
         description: "validates the essential skills required to perform core security functions, manage risks, and defend against cyber threats.",
       },
@@ -243,7 +245,7 @@ const about: About = {
           },
            {
             name: "AWS Cloud Formation",
-            icon: "AWS Cloud Formation",
+            icon: "cloudformation",
           },
           
         ],
@@ -258,24 +260,24 @@ const about: About = {
         ),
         tags: [
           {
-            name: "Vpc",
-            icon: "Vpc",
+            name: "VPC",
+            icon: "aws",
           },
           {
             name: "S3",
-            icon: "S3",
+            icon: "s3",
           },
           {
             name: "EC2",
-            icon: "EC2",
+            icon: "ec2",
           },
           {
             name: "IAM",
-            icon: "IAM",
+            icon: "iam",
           },
           {
             name: "Route52",
-            icon: "Route53",
+            icon: "route53",
           },
         ],
         // optional: leave the array empty if you don't want to display images
@@ -291,11 +293,11 @@ const about: About = {
         tags: [
           {
             name: "CloudTrail",
-            icon: "CloudTrail",
+            icon: "aws",
           },
           {
             name: "GuardDuty",
-            icon: "GuardDuty",
+            icon: "aws",
           },
           
         ],
@@ -320,7 +322,7 @@ const blog: Blog = {
 const work: Work = {
   path: "/work",
   label: "Work",
-  title: `Projects – ${person.name}`,
+  title: `Projects By ${person.name}`,
   description: `Design and dev projects by ${person.name}`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
   // All projects will be listed on the /home and /work routes
@@ -379,3 +381,4 @@ const gallery: Gallery = {
 };
 
 export { person, social, newsletter, home, about, blog, work, gallery };
+

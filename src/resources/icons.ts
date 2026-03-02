@@ -13,6 +13,16 @@ import {
   HiOutlineGlobeAsiaAustralia,
   HiOutlineRocketLaunch,
 } from "react-icons/hi2";
+import {
+  
+  SiTerraform,
+  SiAmazon,           // General AWS & CloudFormation
+  SiAmazons3,
+  SiAmazonec2,
+  SiAmazonroute53,
+  SiAmazoniam,
+  SiAmazoncloudwatch, // Use for CloudTrail / GuardDuty (Monitoring)
+} from "react-icons/si";
 
 import {
   PiHouseDuotone,
@@ -32,6 +42,14 @@ import {
 import { FaDiscord, FaGithub, FaLinkedin, FaX, FaThreads, FaInstagram, FaXTwitter, FaFacebook, FaPinterest, FaWhatsapp, FaReddit, FaTelegram, } from "react-icons/fa6";
 
 export const iconLibrary: Record<string, IconType> = {
+ terraform: SiTerraform,
+  aws: SiAmazon,
+  s3: SiAmazons3,
+  ec2: SiAmazonec2,
+  route53: SiAmazonroute53,
+  iam: SiAmazoniam,
+  cloudwatch: SiAmazoncloudwatch,
+  cloudformation: SiAmazon, // Maps to the general AWS logo
   arrowUpRight: HiArrowUpRight,
   arrowRight: HiArrowRight,
   email: HiEnvelope,

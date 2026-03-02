@@ -120,7 +120,7 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
               </Text>
             </Row>
           </Row>
-          {post.metadata.image && (
+         {post.metadata.image && (
             <Media
               src={post.metadata.image}
               alt={post.metadata.title}
