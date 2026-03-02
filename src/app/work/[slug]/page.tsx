@@ -14,6 +14,7 @@ import {
   Row,
   Avatar,
   Line,
+  Icon,
 } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
@@ -100,6 +101,31 @@ export default async function Project({
           {post.metadata.publishedAt && formatDate(post.metadata.publishedAt)}
         </Text>
         <Heading variant="display-strong-m">{post.metadata.title}</Heading>
+        {/* GitHub and Demo Buttons */}
+        {(post.metadata.github || post.metadata.demo) && (
+          <Row gap="12" marginTop="16">
+            {post.metadata.github && (
+              <Button
+                href={post.metadata.github}
+                variant="secondary"
+                size="m"
+                prefixIcon="github"
+              >
+                View GitHub
+              </Button>
+            )}
+            {post.metadata.demo && (
+              <Button
+                href={post.metadata.demo}
+                variant="primary"
+                size="m"
+                prefixIcon="arrowUpRight"
+              >
+                Live Demo
+              </Button>
+            )}
+          </Row>
+        )}
       </Column>
       <Row marginBottom="32" horizontal="center">
         <Row gap="16" vertical="center">
@@ -118,9 +144,23 @@ export default async function Project({
           </Text>
         </Row>
       </Row>
-      {post.metadata.images.length > 0 && (
-        <Media priority aspectRatio="16 / 9" radius="m" alt="image" src={post.metadata.images[0]} />
+
+      {/* --- STACKED IMAGE LOGIC --- */}
+      {post.metadata.images && post.metadata.images.length > 0 && (
+        <Column gap="16">
+          {post.metadata.images.map((src: string, index: number) => (
+            <Media
+              key={index}
+              src={src}
+              alt={`Project image ${index + 1}`}
+              aspectRatio="16 / 9"
+              radius="m"
+            />
+          ))}
+        </Column>
       )}
+      {/* --------------------------- */}
+
       <Column style={{ margin: "auto" }} as="article" maxWidth="xs">
         <CustomMDX source={post.content} />
       </Column>
