@@ -151,15 +151,7 @@ export default function About() {
   <span style={{ width: "1px", height: "24px", backgroundColor: "var(--static-neutral-alpha-medium)" }} />
 
   {/* --- Section 2: CV --- */}
-  <Icon paddingLeft="4" name="document" onBackground="brand-weak" />
-  <Row paddingX="8">Download CV</Row>
-  <IconButton
-    href="https://your-external-link-to-cv.com"
-    data-border="rounded"
-    variant="secondary"
-    icon="chevronRight" // <--- This icon will now appear
-    tooltip="Download CV"
-    />
+  
               </Row>
             )}
             <Heading className={styles.textAlign} variant="display-strong-xl">

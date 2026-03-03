@@ -1,5 +1,5 @@
 import { About, Blog, Gallery, Home, Newsletter, Person, Social, Work } from "@/types";
-import { Icon, Line, Row, Text } from "@once-ui-system/core";
+import { Icon, IconButton, Line, Row, Text } from "@once-ui-system/core";
 import { DiAws } from "react-icons/di";
 import { SiAmazon } from "react-icons/si";
 
@@ -62,18 +62,32 @@ const home: Home = {
    display: true,
     title: (
       <Row gap="12" vertical="center">
-
+         <Row paddingX="8">
+    <Text onBackground="brand-medium" weight="strong">
+        View My Resume
+    </Text>
+</Row>
+  <IconButton
+    href="https://your-external-link-to-cv.com"
+    target="_blank"             // Opens in new tab
+    rel="noopener noreferrer"
+    data-border="rounded"
+    variant="secondary"             // <--- This applies the "glow" brand color
+    icon="eye"
+    tooltip="View Resume"
+    />
+<Icon paddingRight="4" name="decument" onBackground="brand-weak" />
         <Line background="brand-alpha-strong" vert height="20" />
         <Text marginRight="4" onBackground="brand-medium">
           AWS Certified Solutions Architect
         </Text>
       </Row>
     ),
-    href: "https://www.credly.com/badges/a5a7f2b8-e8fc-44a8-a28d-c7e28c874619/public_url",
+    href: "",
   },
   subline: (
     <>
-    I'm Chineme Anyasi, a <Text as="span" size="xl" weight="strong">Cloud Engineer</Text> turning complex infrastructure challenges into secure, highperformance automated solutions. 
+    I'm Chineme Anyasi, a <Text as="span" size="xl" weight="strong">Cloud Engineer</Text> turning complex infrastructure challenges into secure, high performance automated solutions. 
 </>
   ),
 };

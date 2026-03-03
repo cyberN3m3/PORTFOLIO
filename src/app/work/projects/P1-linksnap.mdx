@@ -1,0 +1,43 @@
+---
+title: "LinkSnap - A Serverless URL Shortener"
+publishedAt: "2026-03-03"
+summary: "Production-grade serverless URL shortening architecture achieving sub-50ms redirection and real-time analytics for near-zero cost."
+images:
+   - "/images/projects/project-01/cover-02.jpg"
+   - "/images/projects/project-01/image-03.jpg"
+team:
+  - name: "Anyasi Chineme"
+    role: "Cloud Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/anyasichieneme"
+---
+
+**[→ View GitHub](https://github.com/cyberN3m3/URL-SHORTNER)** **[→ Live Demo](https://d112w3sfihd1g0.cloudfront.net)**
+
+## Overview
+
+Architected and deployed LinkSnap, a high performance serverless URL shortening service designed for ultra low latency and 99.9% availability. The system demonstrates a "Serverless First" approach, leveraging AWS managed services to handle high traffic redirection with a near zero cost footprint (under $0.50/month) while maintaining a completely automated infrastructure lifecycle.
+
+## Key Features
+
+- **High Velocity Redirection**: Optimized Lambda execution and DynamoDB key-value lookups ensure lightning-fast redirection with sub-50ms response times.
+- **Event Driven Analytics**: Real-time tracking of click counts, referrers, and geographic data processed asynchronously to ensure zero impact on user experience.
+- **Automated Deployment**: Entire infrastructure defined as code (IaC) using Terraform, enabling one-click reproducibility and version-controlled environment changes.
+- **Secure by Design**: Implementation of AWS IAM least-privilege roles, secure HTTPS communication via CloudFront, and automated input sanitization.
+- **Ultra-Low Overhead**: Runs entirely within the AWS Free Tier, capable of handling 100k+ monthly requests at zero operational cost.
+
+## Technologies Used
+
+- **AWS Lambda**: Event-driven compute handling the core shortening logic and asynchronous analytics processing.
+- **Amazon DynamoDB**: High-performance NoSQL database for ultra-low latency URL mappings and visitor metadata.
+- **Amazon API Gateway**: Scalable RESTful interface providing secure entry points for the shortening API and redirection service.
+- **Terraform**: Infrastructure as Code (IaC) for reproducible and version-controlled cloud environments.
+- **AWS CloudFront**: Global distribution for the frontend, ensuring low-latency delivery of the management interface.
+
+## Challenges and Learnings
+
+One significant challenge was mitigating "Lambda Cold Starts" to meet the sub-50ms redirection requirement consistently. This was solved by optimizing the function package size and utilizing the Python 3.11 runtime for its significant execution performance improvements. Additionally, designing the NoSQL schema required balancing write-heavy analytics with read-heavy lookups; I implemented a single-table design strategy that allows for efficient retrieval of both the destination URL and performance metrics in a single query, significantly reducing database I/O overhead.
+
+## Outcome
+
+LinkSnap successfully provides a scalable, enterprise ready microservice that bridges the gap between high performance and cost efficiency. The project demonstrates proficiency in serverless backend development, NoSQL database optimization, and infrastructure automation. The modular Terraform stack created for this project now serves as a reusable template for deploying high-availability serverless APIs in minutes, showcasing a deep understanding of cost-optimized cloud architecture.
