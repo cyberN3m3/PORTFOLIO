@@ -1,0 +1,56 @@
+---
+title: "Zero-Trust Remote Workforce Platform on AWS"
+publishedAt: "2026-03-10"
+summary: "Enterprise-grade remote workforce management platform with zero-trust AWS infrastructure, React + TypeScript dashboard, and full CI/CD pipeline — deployed for $1.30/month."
+images:
+  - "/images/projects/project-01/p3-4.png"
+  - "/images/projects/project-01/p3-1.png"
+  - "/images/projects/project-01/p3-2.png"
+  - "/images/projects/project-01/p3-3.png"
+link: "https://remote-workforce-platform.vercel.app"
+team:
+  - name: "Anyasi Chineme"
+    role: "Cloud Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/anyasichieneme"
+---
+
+**[→ View GitHub](https://github.com/cyberN3m3/remote-workforce-platform)**  **[→ Live Demo](https://remote-workforce-platform.vercel.app)**
+
+## Overview
+
+Architected and deployed a production ready remote workforce management platform combining a React + TypeScript frontend with a fully Terraform-managed AWS backend. The infrastructure implements zero trust principles across a 3-tier VPC with EC2 Auto Scaling, RDS PostgreSQL, ALB and Cognito MFA while keeping operational costs at $1.30/month through strategic Free Tier utilization and NAT Gateway elimination. A real time monitoring dashboard surfaces security events, active user metrics, and system uptime, delivering enterprise-grade observability at startup-friendly costs.
+
+## Key Features
+
+- **Zero-Trust Architecture**: All backend resources deployed into private subnets by default, with least-privilege security groups enforcing port-specific, role-based access across every tier.
+- **AWS Cognito MFA**: User authentication backed by Cognito user pools with mandatory multi-factor authentication, eliminating credential-based attack surfaces.
+- **Infrastructure as Code**: Modular Terraform configuration spanning VPC, EC2, RDS, ALB, Cognito, and CloudWatch — enabling one-command provisioning and fully version-controlled infrastructure changes.
+- **Cost-Optimized Stack**: Full AWS infrastructure running at $1.30/month by eliminating NAT Gateways (saving $32/month), consolidating to a single ALB with path-based routing (saving $15/month), and maximizing Free Tier on EC2 and RDS.
+- **Real-Time Security Dashboard**: Live monitoring interface with Recharts-powered activity visualization, severity-filtered security event logs, and 60fps Framer Motion micro-interactions.
+- **CI/CD Pipeline**: GitHub Actions automates build validation and testing; Vercel handles edge deployment with sub-2-minute release cycles.
+- **High Availability**: Multi-AZ deployment for both RDS and the Application Load Balancer, with EC2 Auto Scaling Groups responding dynamically to CPU utilization.
+- **Secrets Management**: AWS Secrets Manager handles all credentials with automated rotation enabled — zero hardcoded secrets across the entire codebase.
+
+## Technologies Used
+
+- **AWS VPC**: 3-tier network architecture (public, private, and database subnets) across two Availability Zones, providing full network isolation for compute and data layers.
+- **EC2 Auto Scaling Groups**: t3.micro instances with launch templates and CPU-based scaling policies for cost-efficient, elastic compute.
+- **RDS PostgreSQL 15**: Multi-AZ db.t3.micro instance with AES-256 encryption at rest and TLS 1.2 in transit for secure, managed relational storage.
+- **Application Load Balancer**: HTTPS termination with path-based and host-based routing, consolidated across all services to minimize per-resource costs.
+- **AWS Cognito**: Managed user pool with MFA enforcement and IAM integration for zero-trust identity and access control.
+- **AWS Secrets Manager**: Centralized credential store with automated rotation, eliminating static secrets from application code.
+- **Terraform 1.6**: Modular IaC across five domain modules (vpc, ec2, rds, cognito, monitoring) with environment-specific configurations under `environments/prod`.
+- **React 18.2 + TypeScript 5.3**: Strict-mode frontend with custom hooks, lazy loading, and code splitting for a 95+ Lighthouse score and ~180kb gzipped bundle.
+- **Tailwind CSS 3.4 + Inter Font System:** Enterprise-grade dashboard interface with monochromatic slate palette and minimal animations. Designed following modern SaaS patterns (Linear, Vercel) for professional credibility over decorative aesthetics. Achieves 95+ Lighthouse score with optimized bundle size.
+- **GitHub Actions + Vercel**: End-to-end CI/CD from commit to production — automated build checks via Actions, edge deployment via Vercel in under two minutes.
+
+## Challenges and Learnings
+
+## Challenges and Learnings
+
+This build surfaced four engineering problems that each, in their own way, came down to toolchain boundaries not playing nicely together. The first was TypeScript strict mode breaking the build over unused variable declarations inside custom hooks. It sounds minor, but fixing it properly meant auditing every custom hook's destructured return values and cutting dead code paths until the project hit 100% strict mode compliance. The second issue was easy to miss at first glance: shell variable syntax (`${VAR}`) inside Terraform EC2 user data scripts was being swallowed by Terraform's own interpolation engine before the script ever ran. Switching to `$$` escaping and single-quoted heredocs solved it. Third, ALB health checks were failing because the Express backend had no CORS headers, so the load balancer simply refused to route traffic to those instances. Adding origin-aware CORS middleware before the router cleared it up. Last was a batch of eight `npm audit` vulnerabilities flagged right before a Vercel deployment. After tracing the dependency tree, all eight turned out to be scoped to devDependencies with no production exposure, and targeted patches resolved them cleanly. The bigger takeaway from all of this was that IaC templating, TypeScript compilation, network policy, and dependency management each have their own rules, and those rules start conflicting the moment you combine them in a real production pipeline.
+
+## Outcome
+
+The platform demonstrates that zero trust, multi-tier AWS infrastructure does not require enterprise budgets to build or maintain. Total monthly spend sits at [$1.30 — 93%] under a $20 budget ceiling while delivering automated scaling, multi AZ high availability, MFA enforced authentication and end to end encryption. The modular Terraform structure is directly reusable as a foundation for future SaaS or internal tooling projects and the CI/CD pipeline enables sub 2 minute deployments from commit to production. The project reinforces core competencies in AWS infrastructure design, zero trust security architecture, cost optimization strategy, and full-stack cloud-native development.
