@@ -68,7 +68,7 @@ const home: Home = {
     </Text>
 </Row>
   <IconButton
-    href="https://your-external-link-to-cv.com"
+    href="https://drive.google.com/file/d/12x3ocNHSD0vEv485ASG8fAW941UDD9sS/view?usp=drive_link"
     target="_blank"             // Opens in new tab
     rel="noopener noreferrer"
     data-border="rounded"
