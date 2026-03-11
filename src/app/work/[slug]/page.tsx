@@ -1,3 +1,4 @@
+
 import { notFound } from "next/navigation";
 import { getPosts } from "@/utils/utils";
 import {
@@ -15,6 +16,7 @@ import {
   Avatar,
   Line,
   Icon,
+  Carousel, 
 } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
 import { formatDate } from "@/utils/formatDate";
@@ -101,7 +103,7 @@ export default async function Project({
           {post.metadata.publishedAt && formatDate(post.metadata.publishedAt)}
         </Text>
         <Heading variant="display-strong-m">{post.metadata.title}</Heading>
-        {/* GitHub and Demo Buttons */}
+        
         {(post.metadata.github || post.metadata.demo) && (
           <Row gap="12" marginTop="16">
             {post.metadata.github && (
@@ -145,18 +147,26 @@ export default async function Project({
         </Row>
       </Row>
 
-      {/* --- STACKED IMAGE LOGIC --- */}
+      {/* --- CAROUSEL WITH DYNAMIC HEIGHT --- */}
       {post.metadata.images && post.metadata.images.length > 0 && (
-        <Column gap="16">
-          {post.metadata.images.map((src: string, index: number) => (
-            <Media
-              key={index}
-              src={src}
-              alt={`Project image ${index + 1}`}
-              aspectRatio="16 / 9"
-              radius="m"
-            />
-          ))}
+        <Column 
+          fillWidth 
+          gap="m"
+          style={{
+            border: '1px solid var(--neutral-alpha-weak)',
+            borderRadius: 'var(--radius-l)',
+            overflow: 'hidden',
+            background: 'var(--neutral-background-weak)'
+          }}
+        >
+          <Carousel
+            // Removing fixed aspectRatio lets the Carousel respond to image height
+            indicator={post.metadata.images.length > 1 ? "line" : undefined}
+            items={post.metadata.images.map((src: string, index: number) => ({
+              slide: src,
+              alt: `${post.metadata.title} screenshot ${index + 1}`,
+            }))}
+          />
         </Column>
       )}
       {/* --------------------------- */}

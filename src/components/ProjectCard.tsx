@@ -88,3 +88,4 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
     </Column>
   );
 };
+
