@@ -32,6 +32,17 @@ import {
   PiImageDuotone,
 } from "react-icons/pi";
 
+import { 
+  SiPython, 
+  SiDocker, 
+  SiKubernetes, 
+  SiLinux, 
+  SiDiagramsdotnet 
+} from "react-icons/si";
+
+import { VscTerminalBash } from "react-icons/vsc";
+import { HiOutlineCube } from "react-icons/hi2";
+
 import {
   SiJavascript,
   SiNextdotjs,
@@ -82,6 +93,14 @@ export const iconLibrary: Record<string, IconType> = {
   reddit: FaReddit,
   telegram: FaTelegram,
   instagram: FaInstagram,
+  python: SiPython,
+  bash: VscTerminalBash,
+  linux: SiLinux,
+  // Containerization & Orchestration
+  docker: SiDocker,
+  kubernetes: SiKubernetes,
+  optimization: HiOutlineCube,
+  microservices: SiDiagramsdotnet, // Good representation for architecture
 };
 
 export type IconLibrary = typeof iconLibrary;

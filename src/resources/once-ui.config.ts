@@ -14,7 +14,7 @@ import {
 import { home } from "./index";
 
 // IMPORTANT: Replace with your own domain address - it's used for SEO in meta tags and schema
-const baseURL: string = "https://main.d234xwvsfasaff.amplifyapp.com/";
+const baseURL: string = "https://anyasichineme.com/";
 
 const routes: RoutesConfig = {
   "/": true,
