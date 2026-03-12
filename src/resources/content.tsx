@@ -68,7 +68,7 @@ const home: Home = {
     </Text>
 </Row>
   <IconButton
-    href="https://drive.google.com/file/d/12x3ocNHSD0vEv485ASG8fAW941UDD9sS/view?usp=drive_link"
+    href="/cv/Anyasi-Chineme-Resume.pdf"
     target="_blank"             // Opens in new tab
     rel="noopener noreferrer"
     data-border="rounded"
@@ -113,8 +113,8 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        Chineme a Certified Cloud Engineer passionate about transforming complex infrastructure challenges into scalable, secure, and efficient cloud solutions. 
-        His work spans AWS architecture, Infrastructure as Code, DevOps practices, and the convergence of security and cloud technologies.
+        I'am a Certified Cloud Engineer passionate about transforming complex infrastructure challenges into scalable, secure, and efficient cloud solutions. 
+        My work spans AWS architecture, Infrastructure as Code, DevOps practices, and the convergence of security and cloud technologies.
         
 
         
@@ -261,7 +261,14 @@ const about: About = {
             name: "AWS Cloud Formation",
             icon: "cloudformation",
           },
-          
+          {
+            name: "GitHub Action",
+            icon: "github",
+          },
+          {
+            name: "CI/CD Pipelines",
+            icon: "CI/CD",
+          },
         ],
         // optional: leave the array empty if you don't want to display images
         images: [
@@ -300,18 +307,46 @@ const about: About = {
         ],
       },
       {
-        title: "Cloud Security & Monitoring",
+        title: "Languages & Scripting",
         description: (
-          <>Implementing proactive security measures, auditing API activity, and automated threat detection to protect data integrity.</>
+          <>Programmatic tools for orchestrating infrastructure, streamlining deployments and enforcing security-as-code.</>
         ),
         tags: [
           {
-            name: "CloudTrail",
-            icon: "aws",
+            name: "Python",
+            icon: "python",
           },
           {
-            name: "GuardDuty",
-            icon: "aws",
+            name: "Bash/Shell",
+            icon: "bash",
+          },
+        ],
+        // optional: leave the array empty if you don't want to display images
+        images: [
+          
+        ],
+      },
+      {
+        title: "Containerization & Orchestration",
+        description: (
+          <>Packaging applications for consistency across environments and orchestrating resilient, scalable microservices.</>
+        ),
+        tags: [
+          {
+            name: "Docker",
+            icon: "docker",
+          },
+          {
+            name: "Container Optimization",
+            icon: "optimization",
+          },
+          {
+            name: "Kubernetes",
+            icon: "kubernetes",
+          },
+           {
+            name: "Microservices Architecture",
+            icon: "microservices",
           },
           
         ],
