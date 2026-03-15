@@ -1,0 +1,50 @@
+---
+title: "AWS Cost Optimization Dashboard"
+publishedAt: "2026-03-15"
+summary: "Serverless scanner that finds idle EC2 instances, orphaned EBS volumes, and misconfigured S3 across all AWS regions — and emails you the bill every Monday. Found $45/yr in waste on the first run."
+images:
+  - "/images/projects/cost-optimizer/architecture.png"
+  - "/images/projects/cost-optimizer/dashboard1.png"
+  - "/images/projects/cost-optimizer/dashboard2.png"
+link: "http://aws-cost-opt123.s3-website-us-east-1.amazonaws.com"
+team:
+  - name: "Anyasi Chineme"
+    role: "Cloud Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/anyasichieneme"
+---
+
+**[→ View GitHub](https://github.com/cyberN3m3/aws-cost-optimizer)**  **[→ Live Dashboard](http://aws-cost-opt123.s3-website-us-east-1.amazonaws.com)**
+
+## Overview
+
+I kept seeing the same thing across AWS accounts, servers sitting idle, storage volumes nobody deleted, S3 buckets accumulating forever. AWS doesn't tell you about any of it, it just bills you. So I built a scanner that runs every Monday, checks every region, and sends a report with exactly what's being wasted and how much it costs. First time I ran it on my own account it caught a t3.micro at 0.56% average CPU for a week — $45.60/year, doing nothing. The whole thing deploys in 45 seconds and costs $0.00/month to keep running.
+
+## Key Features
+
+- Scans all 18 AWS regions at the same time using Python threads drops scan time from ~54 seconds to ~6 seconds and stays inside API Gateway's 29 second timeout
+- Catches idle EC2 (CPU under 5% for 7 days), unattached EBS volumes, S3 buckets with no lifecycle rules, and on-demand instances that should be on Reserved pricing
+- Each EC2 finding tells you exactly what to do stop it, downsize to a specific instance type, or investigate with the monthly savings calculated
+- Sends the full report via SNS email and optionally drops a summary card into Slack on every scan
+- Live dashboard hosted on S3 plain HTML, no framework, triggers on demand scans from the browser and lets you export a report
+- IAM role is fully read only, `sns:Publish` scoped to a single topic ARN, nothing that can touch or change a resource
+
+## Technologies Used
+
+- **AWS Lambda** : Python 3.12, 600s timeout, concurrent scanning with `ThreadPoolExecutor`
+- **EventBridge** : weekly cron trigger, nothing to manage
+- **API Gateway v2** : HTTP API for built-in CORS and lower cost over REST API
+- **SNS** : email delivery, publish permission scoped to the specific ARN
+- **Terraform** : 11 resources, deploys and tears down cleanly
+- **boto3** : no third-party packages, Slack via `urllib.request`
+- **S3** : static website hosting for the dashboard
+
+## Challenges and Learnings
+
+Two things broke in ways that weren't obvious. The first was a 503 error that only showed up from the browser the CLI always worked fine because there's no timeout on direct Lambda invocations. API Gateway has a hard 29 second limit and scanning 18 regions one at a time was hitting 54 seconds. Switching to `ThreadPoolExecutor` fixed it since all the work is just waiting on API responses anyway.
+
+The second was a Lambda Function URL returning 403 even though everything looked right. The problem was a state conflict I'd done some manual work in the console during debugging, Terraform's state file didn't know about it, and the two got out of sync. Fixed it by dropping the Function URL entirely, going back to API Gateway, and using `terraform import` to bring the existing resources into state rather than letting Terraform try to recreate them from scratch.
+
+## Outcome
+
+Runs at $0.00/month and found real waste on the first scan. The more useful angle is as a consulting tool ask a client for read only permissions, run `terraform apply`, and show up to the first call with actual findings already on screen. That's a different conversation than showing up with a slide deck.
