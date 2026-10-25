@@ -11,7 +11,7 @@ team:
   - name: "Anyasi Chineme"
     role: "Cloud Engineer"
     avatar: "/images/avatar.jpg"
-    linkedIn: "https://linkedin.com/in/anyasichieneme"
+    linkedIn: "https://linkedin.com/in/anyasichineme"
 ---
 
 **[→ View GitHub](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard)**  **[→ Live Dashboard](http://aws-cost-opt123.s3-website-us-east-1.amazonaws.com)**
@@ -22,7 +22,7 @@ I kept seeing the same thing across AWS accounts, servers sitting idle, storage 
 
 ## Key Features
 
-- Scans all 18 AWS regions at the same time using Python threads drops scan time from ~54 seconds to ~6 seconds and stays inside API Gateway's 29 second timeout
+- Scans every enabled AWS region at the same time using Python threads, so a scan finishes inside API Gateway's 29-second timeout
 - Catches idle EC2 (CPU under 5% for 7 days), unattached EBS volumes, S3 buckets with no lifecycle rules, and on-demand instances that should be on Reserved pricing
 - Each EC2 finding tells you exactly what to do stop it, downsize to a specific instance type, or investigate with the monthly savings calculated
 - Sends the full report via SNS email and optionally drops a summary card into Slack on every scan
@@ -35,13 +35,13 @@ I kept seeing the same thing across AWS accounts, servers sitting idle, storage 
 - **EventBridge** : weekly cron trigger, nothing to manage
 - **API Gateway v2** : HTTP API for built-in CORS and lower cost over REST API
 - **SNS** : email delivery, publish permission scoped to the specific ARN
-- **Terraform** : 11 resources, deploys and tears down cleanly
+- **Terraform** : 14 resources, deploys and tears down cleanly
 - **boto3** : no third-party packages, Slack via `urllib.request`
 - **S3** : static website hosting for the dashboard
 
 ## Challenges and Learnings
 
-Two things broke in ways that weren't obvious. The first was a 503 error that only showed up from the browser the CLI always worked fine because there's no timeout on direct Lambda invocations. API Gateway has a hard 29 second limit and scanning 18 regions one at a time was hitting 54 seconds. Switching to `ThreadPoolExecutor` fixed it since all the work is just waiting on API responses anyway.
+Two things broke in ways that weren't obvious. The first was a 503 error that only showed up from the browser the CLI always worked fine because there's no timeout on direct Lambda invocations. API Gateway has a hard 29-second limit, and scanning the regions one at a time took longer than that. Switching to `ThreadPoolExecutor` fixed it since all the work is just waiting on API responses anyway.
 
 The second was a Lambda Function URL returning 403 even though everything looked right. The problem was a state conflict I'd done some manual work in the console during debugging, Terraform's state file didn't know about it, and the two got out of sync. Fixed it by dropping the Function URL entirely, going back to API Gateway, and using `terraform import` to bring the existing resources into state rather than letting Terraform try to recreate them from scratch.
 

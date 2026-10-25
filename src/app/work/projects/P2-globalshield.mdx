@@ -1,7 +1,7 @@
 ---
 title: "Global Shield - Multi Region Disaster Recovery System on AWS"
 publishedAt: "2026-02-08"
-summary: "Enterprise-grade disaster recovery architecture achieving 99.99% availability with automated failover across AWS regions for under $1/month."
+summary: "Multi-region failover on AWS: CloudFront origin groups switch traffic from us-east-1 to us-west-2 automatically, all in Terraform, inside the Free Tier."
 images:
   - "/images/projects/project-01/p2-3.png"
   - "/images/projects/project-01/p2-1.png"
@@ -11,34 +11,34 @@ team:
   - name: "Anyasi Chineme"
     role: "Cloud Engineer"
     avatar: "/images/avatar.jpg"
-    linkedIn: "https://linkedin.com/in/anyasichieneme"
+    linkedIn: "https://linkedin.com/in/anyasichineme"
 ---
 
 **[→ View GitHub](https://github.com/cyberN3m3/Global-Shield-Dashboard)**  **[→ Live Demo](https://d3ko3s70so24u1.cloudfront.net/)**
 
 ## Overview
 
-Architected and deployed a production-grade multi region disaster recovery solution using AWS, implementing automated failover between us-east-1 and us-west-2 regions. The system achieves sub 60 second recovery time with zero data loss while maintaining operational costs under $1/month using AWS Free Tier.
+Designed and deployed a multi-region disaster recovery setup on AWS with automatic failover from us-east-1 to us-west-2. The site is served from S3 buckets in both regions behind one CloudFront distribution; if the primary origin returns errors, CloudFront retries the request against the secondary without anyone touching DNS. Running costs stay within the AWS Free Tier.
 
 ## Key Features
 - **Automated Failover**: CloudFront Origin Groups provide active-passive traffic shifting with zero manual intervention, ensuring continuous availability during regional outages.
 - **Multi-Region Resilience**: Redundant hosting across US East and US West regions with S3 static website hosting, eliminating single points of failure.
 - **Real-Time Dashboard**: Professional dark-mode monitoring interface with simulated incident and recovery modes, providing visual feedback on system health and failover status.
 - **Infrastructure as Code**: Complete stack deployed via Terraform, enabling one-click reproducibility and version-controlled infrastructure changes.
-- **Health Monitoring**: Route 53 watchdog with integrated health checks ensuring fastest response times and automatic origin switching during failures.
+- **Health Monitoring**: a Route 53 health check watches the primary endpoint, so an outage is visible even while CloudFront is already serving the backup.
 
 ## Technologies Used
 
 - **AWS CloudFront**: Global CDN serving as entry point with SSL termination and intelligent origin routing.
 - **Amazon S3**: Multi-region static website hosting with region-specific dashboards.
-- **AWS Route 53**: Health checks monitoring primary endpoint availability and latency.
+- **AWS Route 53**: health check on the primary endpoint.
 - **Terraform**: Complete infrastructure automation and deployment orchestration.
 - **HTML5 & Tailwind CSS**: High-tech terminal aesthetic with JetBrains Mono and Inter fonts for professional monitoring interface.
 
 ## Challenges and Learnings
 
-One key challenge was ensuring seamless failover while maintaining cost efficiency under one dollar per month. The solution involved using CloudFront Origin Groups with S3 static hosting instead of compute resources, achieving enterprise-grade resilience at minimal cost. Additionally, creating an intuitive dashboard that clearly communicates system state during both normal operations and failover events required careful UX design to balance technical information with accessibility.
+The key challenge was getting real failover without paying for idle servers in a second region. CloudFront origin groups solved it: failover happens per request at the edge, and the standby region is just an S3 bucket that costs almost nothing until it is needed. Additionally, creating an intuitive dashboard that clearly communicates system state during both normal operations and failover events required careful UX design to balance technical information with accessibility.
 
 ## Outcome
 
-The system successfully demonstrates enterprise disaster recovery principles at startup-friendly costs. Monthly operational expenses remain between $0.00 and $0.60 (within AWS Free Tier), while providing automated failover capabilities typically found in systems costing hundreds of dollars monthly. The reusable Terraform modules now serve as a foundation for building resilient cloud applications, and the project showcases proficiency in multi-region architecture, disaster recovery planning, and cost-optimized infrastructure design.
+The project shows an active-passive disaster recovery pattern working end to end at almost no cost, and taught me multi-region Terraform (provider aliases), CloudFront origin groups and failover criteria, and how to show system state clearly on a dashboard. The same pattern is a sensible first step for any static site or front end that must survive a regional outage.

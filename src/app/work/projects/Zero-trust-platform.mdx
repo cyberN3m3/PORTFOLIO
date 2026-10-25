@@ -1,7 +1,7 @@
 ---
 title: "Zero-Trust Remote Workforce Platform on AWS"
 publishedAt: "2026-03-10"
-summary: "Enterprise-grade remote workforce management platform with zero-trust AWS infrastructure, React + TypeScript dashboard, and full CI/CD pipeline — deployed for $1.30/month."
+summary: "Enterprise-grade remote workforce management platform with zero-trust AWS infrastructure, React + TypeScript dashboard, and cost-aware Terraform design (one shared NAT Gateway, one ALB)."
 images:
   - "/images/projects/project-01/p3-4.png"
   - "/images/projects/project-01/p3-1.png"
@@ -12,40 +12,38 @@ team:
   - name: "Anyasi Chineme"
     role: "Cloud Engineer"
     avatar: "/images/avatar.jpg"
-    linkedIn: "https://linkedin.com/in/anyasichieneme"
+    linkedIn: "https://linkedin.com/in/anyasichineme"
 ---
 
 **[→ View GitHub](https://github.com/cyberN3m3/remote-workforce-platform)**  **[→ Frontend Demo](https://remote-workforce-platform.vercel.app)**
 
 ## Overview
 
-Architected and deployed a production ready remote workforce management platform combining a React + TypeScript frontend with a fully Terraform-managed AWS backend. The infrastructure implements zero trust principles across a 3-tier VPC with EC2 Auto Scaling, RDS PostgreSQL, ALB and Cognito MFA while keeping operational costs at $1.30/month through strategic Free Tier utilization and NAT Gateway elimination. A real time monitoring dashboard surfaces security events, active user metrics, and system uptime, delivering enterprise-grade observability at startup-friendly costs.
+Architected and deployed a production ready remote workforce management platform combining a React + TypeScript frontend with a fully Terraform-managed AWS backend. The infrastructure implements zero trust principles across a 3-tier VPC with EC2 Auto Scaling, RDS PostgreSQL, ALB and Cognito MFA while keeping costs down with Free Tier instance sizes, one NAT Gateway shared by both private subnets and a single ALB. A real time monitoring dashboard surfaces security events, active user metrics, and system uptime, delivering enterprise-grade observability at startup-friendly costs.
 
 ## Key Features
 
 - **Zero-Trust Architecture**: All backend resources deployed into private subnets by default, with least-privilege security groups enforcing port-specific, role-based access across every tier.
-- **AWS Cognito MFA**: User authentication backed by Cognito user pools with mandatory multi-factor authentication, eliminating credential-based attack surfaces.
+- **AWS Cognito MFA**: User authentication backed by Cognito user pools and optional TOTP multi-factor authentication.
 - **Infrastructure as Code**: Modular Terraform configuration spanning VPC, EC2, RDS, ALB, Cognito, and CloudWatch — enabling one-command provisioning and fully version-controlled infrastructure changes.
-- **Cost-Optimized Stack**: Full AWS infrastructure running at $1.30/month by eliminating NAT Gateways (saving $32/month), consolidating to a single ALB with path-based routing (saving $15/month), and maximizing Free Tier on EC2 and RDS.
+- **Cost-Aware Design**: one NAT Gateway shared by both private subnets instead of one per AZ (about $32/month saved), a single ALB with path-based routing for every service, and Free Tier sizes for EC2 and RDS. The NAT Gateway is the main running cost, so the stack is destroyed after demos.
 - **Real-Time Security Dashboard**: Live monitoring interface with Recharts-powered activity visualization, severity-filtered security event logs, and 60fps Framer Motion micro-interactions.
-- **CI/CD Pipeline**: GitHub Actions automates build validation and testing; Vercel handles edge deployment with sub-2-minute release cycles.
-- **High Availability**: Multi-AZ deployment for both RDS and the Application Load Balancer, with EC2 Auto Scaling Groups responding dynamically to CPU utilization.
-- **Secrets Management**: AWS Secrets Manager handles all credentials with automated rotation enabled — zero hardcoded secrets across the entire codebase.
+- **Continuous Deployment**: Vercel builds and deploys the frontend on every push.
+- **Availability**: the ALB and API instances span two Availability Zones and the Auto Scaling group replaces unhealthy instances; RDS is single-AZ to stay in the Free Tier (one setting turns on Multi-AZ failover).
+- **Secrets Management**: database credentials live in AWS Secrets Manager, not in the code.
 
 ## Technologies Used
 
 - **AWS VPC**: 3-tier network architecture (public, private, and database subnets) across two Availability Zones, providing full network isolation for compute and data layers.
-- **EC2 Auto Scaling Groups**: t3.micro instances with launch templates and CPU-based scaling policies for cost-efficient, elastic compute.
-- **RDS PostgreSQL 15**: Multi-AZ db.t3.micro instance with AES-256 encryption at rest and TLS 1.2 in transit for secure, managed relational storage.
+- **EC2 Auto Scaling Group**: t3.micro instances from a launch template, kept at the desired count and replaced when unhealthy.
+- **RDS PostgreSQL 15**: db.t3.micro instance in private database subnets, with AES-256 encryption at rest and TLS 1.2 in transit for secure, managed relational storage.
 - **Application Load Balancer**: HTTPS termination with path-based and host-based routing, consolidated across all services to minimize per-resource costs.
-- **AWS Cognito**: Managed user pool with MFA enforcement and IAM integration for zero-trust identity and access control.
-- **AWS Secrets Manager**: Centralized credential store with automated rotation, eliminating static secrets from application code.
+- **AWS Cognito**: managed user pool with optional TOTP MFA.
+- **AWS Secrets Manager**: stores the database credentials outside the application code.
 - **Terraform 1.6**: Modular IaC across five domain modules (vpc, ec2, rds, cognito, monitoring) with environment-specific configurations under `environments/prod`.
 - **React 18.2 + TypeScript 5.3**: Strict-mode frontend with custom hooks, lazy loading, and code splitting for a 95+ Lighthouse score and ~180kb gzipped bundle.
 - **Tailwind CSS 3.4 + Inter Font System:** Enterprise-grade dashboard interface with monochromatic slate palette and minimal animations. Designed following modern SaaS patterns (Linear, Vercel) for professional credibility over decorative aesthetics. Achieves 95+ Lighthouse score with optimized bundle size.
-- **GitHub Actions + Vercel**: End-to-end CI/CD from commit to production — automated build checks via Actions, edge deployment via Vercel in under two minutes.
-
-## Challenges and Learnings
+- **Vercel**: builds and deploys the frontend automatically on every push.
 
 ## Challenges and Learnings
 
@@ -53,4 +51,4 @@ This build surfaced four engineering problems that each, in their own way, came 
 
 ## Outcome
 
-The platform demonstrates that zero trust, multi-tier AWS infrastructure does not require enterprise budgets to build or maintain. Total monthly spend sits at [$1.30 — 93%] under a $20 budget ceiling while delivering automated scaling, multi AZ high availability, MFA enforced authentication and end to end encryption. The modular Terraform structure is directly reusable as a foundation for future SaaS or internal tooling projects and the CI/CD pipeline enables sub 2 minute deployments from commit to production. The project reinforces core competencies in AWS infrastructure design, zero trust security architecture, cost optimization strategy, and full-stack cloud-native development.
+The project shows a 3-tier, zero-trust network on AWS: only the load balancer is public, the API servers and database sit in private subnets, and every tier only accepts traffic from the one before it. The cost table in the GitHub README is honest about where the money goes (the NAT Gateway) and what I traded for it. Next steps I would take for production: Multi-AZ RDS, mandatory MFA, Secrets Manager rotation, a CPU-based scaling policy and a GitHub Actions pipeline for the Terraform.

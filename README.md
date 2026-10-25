@@ -1,91 +1,47 @@
-# Magic Portfolio
+# anyasichineme.com
 
-Magic Portfolio is a simple, clean, beginner-friendly portfolio template. It supports an MDX-based content system for projects and blog posts, an about / CV page and a gallery.
+My personal portfolio site: **[anyasichineme.com](https://anyasichineme.com)**
 
-View the demo [here](https://demo.magic-portfolio.com).
+I'm Anyasi Chineme, a cloud engineer working mainly on AWS, Terraform and CI/CD. The site lists my projects, certifications and experience. Each project page links to its GitHub repo, where the code, architecture and evidence live.
 
-![Magic Portfolio](public/images/og/home.jpg)
+## Projects on the site
 
-## Getting started
+| Project | What it shows | Repo |
+| --- | --- | --- |
+| DocFlow | Migrating a single-server app to ECS Fargate, RDS, S3 and SQS: 101 Terraform resources, zero-data-loss migration, security scanning, cost model, monitoring and DR drills | [docflow](https://github.com/cyberN3m3/docflow) |
+| AWS Cost Optimization Dashboard | Serverless scanner for idle and wasted resources across every region, weekly email report | [AWS-Cost-Optimization-Dashboard](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard) |
+| Zero-Trust Remote Workforce Platform | 3-tier VPC with private compute and database, ALB, Cognito, React + TypeScript dashboard | [remote-workforce-platform](https://github.com/cyberN3m3/remote-workforce-platform) |
+| Global Shield | Multi-region failover with CloudFront origin groups across us-east-1 and us-west-2 | [Global-Shield-Dashboard](https://github.com/cyberN3m3/Global-Shield-Dashboard) |
+| LinkSnap | Serverless URL shortener on Lambda, API Gateway and DynamoDB | [URL-SHORTNER](https://github.com/cyberN3m3/URL-SHORTNER) |
 
-**1. Clone the repository**
-```
-git clone https://github.com/once-ui-system/magic-portfolio.git
-```
+## Built with
 
-**2. Install dependencies**
-```
+- [Next.js](https://nextjs.org) and MDX: each project is one `.mdx` file in `src/app/work/projects/`
+- [Once UI](https://once-ui.com) components, starting from the [Magic Portfolio](https://github.com/once-ui-system/magic-portfolio) template by Once UI
+- TypeScript, Sass, Biome for formatting
+
+## Run it locally
+
+```bash
 npm install
+npm run dev        # http://localhost:3000
+npm run build      # production build
 ```
 
-**3. Run dev server**
-```
-npm run dev
-```
+## Where things are
 
-**4. Edit config**
-```
-src/resources/once-ui.config.js
-```
+| To change | Edit |
+| --- | --- |
+| Name, role, links, about page, experience, certifications | `src/resources/content.tsx` |
+| Site URL, enabled pages, theme | `src/resources/once-ui.config.ts` |
+| Projects | `src/app/work/projects/*.mdx` (images in `public/images/projects/`) |
 
-**5. Edit content**
-```
-src/resources/content.js
-```
+## Contact
 
-**6. Create blog posts / projects**
-```
-Add a new .mdx file to src/app/blog/posts or src/app/work/projects
-```
-
-Magic Portfolio was built with [Once UI](https://once-ui.com) for [Next.js](https://nextjs.org). It requires Node.js v18.17+.
-
-## Documentation
-
-Docs available at: [docs.once-ui.com](https://docs.once-ui.com/docs/magic-portfolio/quick-start)
-
-## Features
-
-### Once UI
-- All tokens, components & features of [Once UI](https://once-ui.com)
-
-### SEO
-- Automatic open-graph and X image generation with next/og
-- Automatic schema and metadata generation based on the content file
-
-### Design
-- Responsive layout optimized for all screen sizes
-- Timeless design without heavy animations and motion
-- Endless customization options through [data attributes](https://once-ui.com/docs/theming)
-
-### Content
-- Render sections conditionally based on the content file
-- Enable or disable pages for blog, work, gallery and about / CV
-- Generate and display social links automatically
-- Set up password protection for URLs
-
-### Localization
-- A localized, earlier version of Magic Portfolio is available with the next-intl library
-- To use localization, switch to the 'i18n' branch
-
-## Creators
-
-Lorant One: [Threads](https://www.threads.net/@lorant.one) / [LinkedIn](https://www.linkedin.com/in/lorant-one/)
-
-## Get involved
-
-- Join the Design Engineers Club on [Discord](https://discord.com/invite/5EyAQ4eNdS) and share your project with us!
-- Deployed your docs? Share it on the [Once UI Hub](https://once-ui.com/hub) too! We feature our favorite apps on our landing page.
+- Email: [anyasichineme.p@gmail.com](mailto:anyasichineme.p@gmail.com)
+- LinkedIn: [linkedin.com/in/anyasichineme](https://www.linkedin.com/in/anyasichineme)
+- GitHub: [cyberN3m3](https://github.com/cyberN3m3)
 
 ## License
 
-Distributed under the CC BY-NC 4.0 License.
-- Attribution is required.
-- Commercial usage is not allowed.
-- You can extend the license to [Dopler CC](https://dopler.app/license) by purchasing a [Once UI Pro](https://once-ui.com/pricing) license.
-
-See `LICENSE.txt` for more information.
-
-## Deploy with Vercel
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&project-name=portfolio&repository-name=portfolio&redirect-url=https%3A%2F%2Fgithub.com%2Fonce-ui-system%2Fmagic-portfolio&demo-title=Magic%20Portfolio&demo-description=Showcase%20your%20designers%20or%20developer%20portfolio&demo-url=https%3A%2F%2Fdemo.magic-portfolio.com&demo-image=%2F%2Fraw.githubusercontent.com%2Fonce-ui-system%2Fmagic-portfolio%2Fmain%2Fpublic%2Fimages%2Fog%2Fhome.jpg)
+The template code is licensed under [CC BY-NC 4.0](LICENSE) by Once UI. My content (text, photos, project write-ups) is mine; please don't reuse it.
