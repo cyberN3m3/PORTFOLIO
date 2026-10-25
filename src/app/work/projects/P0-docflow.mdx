@@ -1,0 +1,50 @@
+---
+title: "DocFlow - Migrating a Single-Server App to AWS"
+publishedAt: "2026-10-24"
+summary: "Migrated a document-to-PDF app from one Docker Compose server to ECS Fargate, RDS, S3 and SQS with 101 Terraform resources: zero data loss, ~9 minutes of downtime, Checkov findings 51 → 0, and a 22% cheaper always-on bill."
+images:
+  - "/images/projects/docflow/architecture.png"
+  - "/images/projects/docflow/app-on-aws.png"
+  - "/images/projects/docflow/dashboard.png"
+link: ""
+team:
+  - name: "Anyasi Chineme"
+    role: "Cloud Engineer"
+    avatar: "/images/avatar.jpg"
+    linkedIn: "https://linkedin.com/in/anyasichineme"
+---
+
+**[→ View GitHub](https://github.com/cyberN3m3/docflow)**
+
+## Overview
+
+DocFlow is a document-to-PDF web app (Word, Excel, PowerPoint, text and images to PDF, plus PDF merging) that I built and first deployed the way many small businesses do: six containers on one server with Docker Compose. I then migrated it to AWS with Terraform, the way I would for a client: designed the target architecture, moved the live data, hardened it, costed it, put monitoring on it and tested the recovery plan. The AWS environment is rebuilt from code in about 15 minutes and destroyed after every session, so there is no permanent live demo; the GitHub repo has the evidence screenshots for every phase.
+
+## Key Features
+
+- **Zero-data-loss migration**: 5 users, 21 conversion jobs and 21 files moved to AWS and verified automatically (users, jobs per status and every finished file compared on both sides), with about 9 minutes of downtime.
+- **Everything in Terraform**: 101 AWS resources in 7 modules plus a bootstrap layer for state, CI roles and the account-wide security services.
+- **Secure by default**: CloudFront with AWS WAF in front, a load balancer that only accepts CloudFront, private and encrypted RDS that requires TLS, secrets in Secrets Manager, read-only containers, and no AWS access keys anywhere (GitHub Actions uses OIDC).
+- **Scanned and audited**: Checkov findings went from 51 to 0 (6 fixed, 45 accepted with a written reason in the code); the account was audited with Prowler against the CIS AWS benchmark and every remaining finding triaged; image CVEs are triaged with a review date.
+- **Safe delivery**: every change is tested, scanned (secrets, IaC, dependencies, images), previewed as a Terraform plan on the pull request, deployed with automatic rollback, then smoke-tested.
+- **Cost-aware**: the conversion worker runs on Fargate Spot, cutting the always-on estimate from $105 to $82 a month (−22%); running it only for sessions costs about $4.50 a month.
+- **Observable and recoverable**: 12 CloudWatch alarms, event alerts and a dashboard. DR drills passed: database restored to a point in time in about 15 minutes with zero data loss (8 min 35 s RPO measured), a deleted file recovered from S3 versioning in 4 seconds, and a crashed task replaced automatically.
+
+## Technologies Used
+
+- **Amazon ECS on Fargate and Fargate Spot**: web and worker services with no servers to manage; the worker scales on queue depth.
+- **Amazon RDS PostgreSQL**: private, encrypted, TLS-only, with 7-day point-in-time recovery.
+- **Amazon S3 and SQS**: versioned file storage with presigned downloads, and a job queue with a dead-letter queue (replacing local disk and Redis).
+- **CloudFront, AWS WAF and an Application Load Balancer**: HTTPS at the edge, managed rule sets and rate limiting, traffic spread over two Availability Zones.
+- **Terraform**: remote state with locking, modules per layer, and policy scanning with Checkov.
+- **GitHub Actions, Amazon ECR and OIDC**: CI/CD with an image-scan gate and short-lived, branch-scoped deployment roles.
+- **CloudTrail, GuardDuty, VPC Flow Logs, Prowler and CloudWatch**: audit trail, threat detection, network logs, compliance checks, alarms and dashboards.
+- **Python (FastAPI, Celery), Docker and Gotenberg**: the application itself, one image for both environments.
+
+## Challenges and Learnings
+
+The hardest part was not building the AWS side but moving the data safely. I wrote the migration as a runbook with a freeze, a database dump and restore through a one-off ECS task, a file copy to S3 and an automatic verification step that compares users, jobs and every finished file on both sides, so "it worked" is a printed result rather than a feeling. Running the DR drill also caught a real bug in my own tooling: the restore script read the task logs before CloudWatch had received them, so it reported failure on a successful restore. I fixed it to wait for the result line, and wrote that up in the repo along with the other problems I hit (Terraform plan drift from a database parameter, a deployment and a Terraform apply overlapping, and more). The biggest lesson was to treat every security exception and every number as something that must be written down and provable.
+
+## Outcome
+
+DocFlow shows the full job of a cloud migration rather than just the infrastructure: a documented "before", a target design with written trade-offs, a verified data migration, security scanning and audit results, a cost model with sources, monitoring, and recovery drills with measured results. All of it is reproducible from the repository.
