@@ -1,7 +1,7 @@
 ---
 title: "Zero-Trust Remote Workforce Platform on AWS"
 publishedAt: "2026-03-10"
-summary: "Enterprise-grade remote workforce management platform with zero-trust AWS infrastructure, React + TypeScript dashboard, and cost-aware Terraform design (one shared NAT Gateway, one ALB)."
+summary: "A remote workforce platform on a 3-tier, zero-trust AWS network: private API servers and database, Cognito sign-in, a React + TypeScript dashboard, and a Terraform design that keeps costs down (one shared NAT Gateway, one ALB)."
 images:
   - "/images/projects/project-01/p3-4.png"
   - "/images/projects/project-01/p3-1.png"
@@ -19,36 +19,43 @@ team:
 
 ## Overview
 
-Architected and deployed a production ready remote workforce management platform combining a React + TypeScript frontend with a fully Terraform-managed AWS backend. The infrastructure implements zero trust principles across a 3-tier VPC with EC2 Auto Scaling, RDS PostgreSQL, ALB and Cognito MFA while keeping costs down with Free Tier instance sizes, one NAT Gateway shared by both private subnets and a single ALB. A real time monitoring dashboard surfaces security events, active user metrics, and system uptime, delivering enterprise-grade observability at startup-friendly costs.
+A remote workforce management platform: a React + TypeScript dashboard on the front, and an AWS backend built entirely in Terraform. The network follows zero-trust rules across three tiers. Only the load balancer is public; the API servers (EC2 Auto Scaling) and the PostgreSQL database sit in private subnets, and sign-in goes through Cognito with optional MFA. To keep the bill down I used Free Tier instance sizes, one NAT Gateway shared by both private subnets and a single ALB. The dashboard shows security events, active users and uptime.
 
-## Key Features
+## What it does
 
-- **Zero-Trust Architecture**: All backend resources deployed into private subnets by default, with least-privilege security groups enforcing port-specific, role-based access across every tier.
-- **AWS Cognito MFA**: User authentication backed by Cognito user pools and optional TOTP multi-factor authentication.
-- **Infrastructure as Code**: Modular Terraform configuration spanning VPC, EC2, RDS, ALB, Cognito, and CloudWatch — enabling one-command provisioning and fully version-controlled infrastructure changes.
-- **Cost-Aware Design**: one NAT Gateway shared by both private subnets instead of one per AZ (about $32/month saved), a single ALB with path-based routing for every service, and Free Tier sizes for EC2 and RDS. The NAT Gateway is the main running cost, so the stack is destroyed after demos.
-- **Real-Time Security Dashboard**: Live monitoring interface with Recharts-powered activity visualization, severity-filtered security event logs, and 60fps Framer Motion micro-interactions.
-- **Continuous Deployment**: Vercel builds and deploys the frontend on every push.
-- **Availability**: the ALB and API instances span two Availability Zones and the Auto Scaling group replaces unhealthy instances; RDS is single-AZ to stay in the Free Tier (one setting turns on Multi-AZ failover).
-- **Secrets Management**: database credentials live in AWS Secrets Manager, not in the code.
+- **Private by default**: every backend resource is in a private subnet, and each tier only accepts traffic on its own port from the tier in front of it.
+- **Sign-in with MFA**: Cognito user pools with optional TOTP multi-factor authentication.
+- **All in Terraform**: VPC, EC2, RDS, ALB, Cognito and CloudWatch are Terraform modules, so the stack is created with one command and every change is version-controlled.
+- **Cost-aware**: one NAT Gateway shared by both private subnets instead of one per AZ (about $32/month saved), one ALB with path-based routing for every service, and Free Tier sizes for EC2 and RDS. The NAT Gateway is the main running cost, so I destroy the stack after demos.
+- **Security dashboard**: activity charts (Recharts), security event logs filtered by severity, and small animations with Framer Motion.
+- **Automatic frontend deploys**: Vercel builds and deploys the frontend on every push.
+- **Availability**: the ALB and API instances span two Availability Zones and the Auto Scaling group replaces unhealthy instances. RDS is single-AZ to stay in the Free Tier; one setting turns on Multi-AZ failover.
+- **No secrets in code**: database credentials live in AWS Secrets Manager.
 
 ## Technologies Used
 
-- **AWS VPC**: 3-tier network architecture (public, private, and database subnets) across two Availability Zones, providing full network isolation for compute and data layers.
-- **EC2 Auto Scaling Group**: t3.micro instances from a launch template, kept at the desired count and replaced when unhealthy.
-- **RDS PostgreSQL 15**: db.t3.micro instance in private database subnets, with AES-256 encryption at rest and TLS 1.2 in transit for secure, managed relational storage.
-- **Application Load Balancer**: HTTPS termination with path-based and host-based routing, consolidated across all services to minimize per-resource costs.
+- **AWS VPC**: public, private and database subnets across two Availability Zones.
+- **EC2 Auto Scaling**: t3.micro instances from a launch template, kept at the desired count and replaced when unhealthy.
+- **RDS PostgreSQL 15**: db.t3.micro in private database subnets, encrypted at rest (AES-256) and in transit (TLS 1.2).
+- **Application Load Balancer**: HTTPS termination with path- and host-based routing, one ALB for all services to keep costs down.
 - **AWS Cognito**: managed user pool with optional TOTP MFA.
-- **AWS Secrets Manager**: stores the database credentials outside the application code.
-- **Terraform 1.6**: Modular IaC across five domain modules (vpc, ec2, rds, cognito, monitoring) with environment-specific configurations under `environments/prod`.
-- **React 18.2 + TypeScript 5.3**: Strict-mode frontend with custom hooks, lazy loading, and code splitting for a 95+ Lighthouse score and ~180kb gzipped bundle.
-- **Tailwind CSS 3.4 + Inter Font System:** Enterprise-grade dashboard interface with monochromatic slate palette and minimal animations. Designed following modern SaaS patterns (Linear, Vercel) for professional credibility over decorative aesthetics. Achieves 95+ Lighthouse score with optimized bundle size.
-- **Vercel**: builds and deploys the frontend automatically on every push.
+- **AWS Secrets Manager**: database credentials outside the application code.
+- **Terraform 1.6**: five modules (vpc, ec2, rds, cognito, monitoring) with the production configuration under `environments/prod`.
+- **React 18.2 + TypeScript 5.3**: strict mode, custom hooks, lazy loading and code splitting (about 180 KB gzipped).
+- **Tailwind CSS 3.4 and Inter**: a plain slate palette with minimal animation.
+- **Vercel**: builds and deploys the frontend on every push.
 
 ## Challenges and Learnings
 
-This build surfaced four engineering problems that each, in their own way, came down to toolchain boundaries not playing nicely together. The first was TypeScript strict mode breaking the build over unused variable declarations inside custom hooks. It sounds minor, but fixing it properly meant auditing every custom hook's destructured return values and cutting dead code paths until the project hit 100% strict mode compliance. The second issue was easy to miss at first glance: shell variable syntax (`${VAR}`) inside Terraform EC2 user data scripts was being swallowed by Terraform's own interpolation engine before the script ever ran. Switching to `$$` escaping and single-quoted heredocs solved it. Third, ALB health checks were failing because the Express backend had no CORS headers, so the load balancer simply refused to route traffic to those instances. Adding origin-aware CORS middleware before the router cleared it up. Last was a batch of eight `npm audit` vulnerabilities flagged right before a Vercel deployment. After tracing the dependency tree, all eight turned out to be scoped to devDependencies with no production exposure, and targeted patches resolved them cleanly. The bigger takeaway from all of this was that IaC templating, TypeScript compilation, network policy, and dependency management each have their own rules, and those rules start conflicting the moment you combine them in a real production pipeline.
+Four problems came from tools that don't quite agree with each other:
+
+- **TypeScript strict mode broke the build** over unused variables in custom hooks. I went through each hook's return values, removed the dead code and got the project fully strict-mode clean.
+- **Shell variables vanished from EC2 user data.** Terraform was interpolating `${VAR}` before the script ever ran. Escaping with `$$` and using single-quoted heredocs fixed it.
+- **ALB health checks failed** because the Express backend sent no CORS headers. Adding origin-aware CORS middleware before the router fixed it.
+- **`npm audit` flagged eight vulnerabilities** just before a Vercel deploy. All eight were in devDependencies with no production exposure, and targeted updates cleared them.
+
+The lesson: Terraform templating, TypeScript, network rules and dependencies each have their own rules, and they only start to clash once you put them together in one pipeline.
 
 ## Outcome
 
-The project shows a 3-tier, zero-trust network on AWS: only the load balancer is public, the API servers and database sit in private subnets, and every tier only accepts traffic from the one before it. The cost table in the GitHub README is honest about where the money goes (the NAT Gateway) and what I traded for it. Next steps I would take for production: Multi-AZ RDS, mandatory MFA, Secrets Manager rotation, a CPU-based scaling policy and a GitHub Actions pipeline for the Terraform.
+The project shows a 3-tier, zero-trust network on AWS: only the load balancer is public, the API servers and database are private, and each tier only accepts traffic from the one before it. The cost table in the GitHub README shows where the money goes (the NAT Gateway) and what I traded for it. For production I would add Multi-AZ RDS, mandatory MFA, Secrets Manager rotation, a CPU-based scaling policy and a GitHub Actions pipeline for the Terraform.

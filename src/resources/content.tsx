@@ -56,8 +56,8 @@ const home: Home = {
   image: "/images/og/home.jpg",
   label: "Home",
   title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Automating Cloud Architecture for Reliability</>,
+  description: `Projects and experience of ${person.name}, ${person.role}`,
+  headline: <>Building and securing AWS infrastructure with Terraform</>,
   featured: {
    display: true,
     title: (
@@ -87,7 +87,7 @@ const home: Home = {
   },
   subline: (
     <>
-    I'm Chineme Anyasi, a <Text as="span" size="xl" weight="strong">Cloud Engineer</Text> turning complex infrastructure challenges into secure, high performance automated solutions. 
+    I'm Chineme Anyasi, a <Text as="span" size="xl" weight="strong">Cloud Engineer</Text>. I build AWS infrastructure in Terraform, ship it through tested CI/CD pipelines and document what it costs and how it recovers.
 </>
   ),
 };
@@ -113,8 +113,8 @@ const about: About = {
     title: "Introduction",
     description: (
       <>
-        I'am a Certified Cloud Engineer passionate about transforming complex infrastructure challenges into scalable, secure, and efficient cloud solutions. 
-        My work spans AWS architecture, Infrastructure as Code, DevOps practices, and the convergence of security and cloud technologies.
+        I'm a cloud engineer with the AWS Solutions Architect Associate and CompTIA Security+ certifications. I work mainly with AWS, Terraform and GitHub Actions, and I build my projects the way I would for a client: written as code, tested, costed and documented.
+        My most recent project moved a containerised app from a single server to AWS with zero data loss, a keyless CI/CD pipeline and tested disaster recovery.
         
 
         
@@ -129,16 +129,16 @@ const about: About = {
       {
         company: "ALX Cloud Computing Program | Remote",
         timeframe: "June 2025 - Dec 2025",
-        role: "Cloud Computing Trainee ",
+        role: "Cloud Computing Trainee (part-time programme)",
         achievements: [
           <>
-           Designed and implemented secure multi-tier AWS network architectures using VPCs, public/private subnets, and NAT Gateways, improving network isolation and security by [40]%
+           Designed segmented VPCs with public and private subnets, security groups and NACLs isolating compute and data tiers.
           </>,
           <>
-           Automated infrastructure provisioning using Infrastructure as Code (IaC) principles, reducing deployment time from hours to minutes.
+           Automated multi-environment provisioning with Terraform modules and GitHub Actions.
           </>,
           <>
-            Configured and enforced least-privilege IAM policies and security groups, reducing security misconfigurations by [60]% according to automated scanning tools.
+            Wrote least-privilege IAM policies with validation scripts; set up CloudWatch monitoring, alerting and incident runbooks for Docker apps.
           </>,
         ],
         images: [
@@ -152,13 +152,13 @@ const about: About = {
         role: "Cloud Computing Intern",
         achievements: [
          <>
-            Architected and secured AWS environments using IAM policies, security groups, and VPC design to control access and isolate critical workloads.
+            Automated configuration of IAM roles, security groups and VPC route tables with Python (boto3) and Terraform across multiple AWS accounts.
           </>,
           <>
-            Strengthened security posture by conducting vulnerability assessments and facilitating simulated incident responses, reducing anticipated remediation time
+            Built GitHub Actions pipelines that validated security group rules and tested infrastructure before deployment.
           </>,
           <>
-            Streamlined security operations by assisting in the deployment of CloudTrail logging and GuardDuty monitoring, enabling [40]% faster detection of potential threats.
+            Audited EC2 and S3 for security issues and remediated over-privileged IAM policies using CloudTrail and IAM Access Analyzer.
           </>,
         ],
         images: [],
@@ -169,13 +169,7 @@ const about: About = {
         role: "Information Technology Intern",
         achievements: [
          <>
-            Analyzed media coverage trends using data analytics tools to provide strategic insights for clients, directly improving report accuracy.
-          </>,
-          <>
-            Collaborated with senior analysts to produce high-stakes deliverables within strict deadlines, reducing data processing time.
-          </>,
-          <>
-            Managed extensive media databases, ensuring 100% data integrity for client news and mentions tracking.
+            Automated multi-source media data extraction with Python and cut report turnaround from 48 to 24 hours through data validation checks and standard documentation (Python, Bash, PostgreSQL).
           </>,
         ],
         images: [],
@@ -220,14 +214,14 @@ const about: About = {
       },
 
       {
-        name: "Comptia Security plus",
-        issuer: "Comptia",
+        name: "CompTIA Security+",
+        issuer: "CompTIA",
         date: "2024",
         status: "Certified",
         credentialId: "678f0869-b35b-40c5-9a8a-06d414297505",
         credentialUrl: "https://www.credly.com/badges/678f0869-b35b-40c5-9a8a-06d414297505",
         badge: "https://images.credly.com/size/160x160/images/80d8a06a-c384-42bf-ad36-db81bce5adce/blob",
-        description: "validates the essential skills required to perform core security functions, manage risks, and defend against cyber threats.",
+        description: "Covers core security skills: risk management, threat detection and incident response.",
       },
 
       {
@@ -250,7 +244,7 @@ const about: About = {
       {
         title: "Automation & Infrastructure as Code (IaC)",
         description: (
-          <>Defining and provisioning infrastructure through declarative code for reproducibility and speed.</>
+          <>Infrastructure written as code, so every environment can be rebuilt the same way and every change is reviewed.</>
         ),
         tags: [
           {
@@ -258,11 +252,11 @@ const about: About = {
             icon: "terraform",
           },
            {
-            name: "AWS Cloud Formation",
+            name: "AWS CloudFormation",
             icon: "cloudformation",
           },
           {
-            name: "GitHub Action",
+            name: "GitHub Actions",
             icon: "github",
           },
           {
@@ -277,7 +271,7 @@ const about: About = {
       {
         title: "Cloud Infrastructure (AWS)",
         description: (
-          <>Designing and deploying secure, scalable, and resilient cloud environments.</>
+          <>Networks, compute, storage and access control on AWS.</>
         ),
         tags: [
           {
@@ -297,7 +291,7 @@ const about: About = {
             icon: "iam",
           },
           {
-            name: "Route52",
+            name: "Route 53",
             icon: "route53",
           },
         ],
@@ -309,7 +303,7 @@ const about: About = {
       {
         title: "Languages & Scripting",
         description: (
-          <>Programmatic tools for orchestrating infrastructure, streamlining deployments and enforcing security-as-code.</>
+          <>Scripts that automate AWS tasks, checks and deployments.</>
         ),
         tags: [
           {
@@ -329,7 +323,7 @@ const about: About = {
       {
         title: "Containerization & Orchestration",
         description: (
-          <>Packaging applications for consistency across environments and orchestrating resilient, scalable microservices.</>
+          <>Packaging apps so they run the same on a laptop, in CI and on AWS.</>
         ),
         tags: [
           {
@@ -372,7 +366,7 @@ const work: Work = {
   path: "/work",
   label: "Work",
   title: `Projects By ${person.name}`,
-  description: `Design and dev projects by ${person.name}`,
+  description: `Cloud projects by ${person.name}`,
   // Create new project pages by adding a new .mdx file to app/blog/posts
   // All projects will be listed on the /home and /work routes
 };

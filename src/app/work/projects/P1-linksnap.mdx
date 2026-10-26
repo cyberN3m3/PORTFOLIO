@@ -18,24 +18,24 @@ team:
 
 ## Overview
 
-Built and deployed LinkSnap, a serverless URL shortener. Three Lambda functions (create, redirect, analytics) sit behind an HTTP API in API Gateway, with two DynamoDB tables for the links and their click history. There are no servers to patch, nothing runs while nobody is clicking, and the whole stack is created and destroyed with Terraform. At portfolio traffic it stays inside the AWS Free Tier.
+LinkSnap is a serverless URL shortener. Three Lambda functions (create, redirect, analytics) sit behind an HTTP API in API Gateway, with two DynamoDB tables for the links and their click history. There are no servers to patch, nothing runs while nobody is clicking, and the whole stack is created and destroyed with Terraform. At portfolio traffic it stays inside the AWS Free Tier.
 
-## Key Features
+## What it does
 
 - **Fast redirects**: a single DynamoDB key lookup on the short code, then an HTTP 301 to the original URL.
 - **Click analytics**: every redirect increments a click counter and records the timestamp, referrer and user agent; the analytics endpoint returns totals and top referrers.
 - **Self-cleaning data**: DynamoDB TTL expires old links and analytics records automatically.
-- **Automated Deployment**: Entire infrastructure defined as code (IaC) using Terraform, enabling one-click reproducibility and version-controlled environment changes.
-- **Secure by Design**: Implementation of AWS IAM least-privilege roles, secure HTTPS communication via CloudFront, and automated input sanitization.
+- **All in Terraform**: the whole stack is created and destroyed with Terraform, and every change is version-controlled.
+- **Locked down**: least-privilege IAM roles per function, HTTPS through CloudFront, and input validation on every new link.
 - **Pay-per-request**: on-demand DynamoDB capacity and Lambda pricing mean the bill follows traffic; at demo traffic it stays in the Free Tier.
 
 ## Technologies Used
 
-- **AWS Lambda**: Event-driven compute handling the core shortening logic and asynchronous analytics processing.
+- **AWS Lambda**: three small Python functions: create, redirect and analytics.
 - **Amazon DynamoDB**: two on-demand tables, one for URL mappings and one for click events (keyed by short code and timestamp).
 - **Amazon API Gateway (HTTP API)**: routes for creating links, redirecting and reading analytics.
-- **Terraform**: Infrastructure as Code (IaC) for reproducible and version-controlled cloud environments.
-- **AWS CloudFront**: Global distribution for the frontend, ensuring low-latency delivery of the management interface.
+- **Terraform**: the whole stack as code.
+- **AWS CloudFront**: serves the frontend over HTTPS from S3.
 
 ## Challenges and Learnings
 
