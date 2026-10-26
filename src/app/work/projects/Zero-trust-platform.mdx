@@ -19,7 +19,7 @@ team:
 
 ## Overview
 
-A remote workforce management platform: a React + TypeScript dashboard on the front, and an AWS backend built entirely in Terraform. The network follows zero-trust rules across three tiers. Only the load balancer is public; the API servers (EC2 Auto Scaling) and the PostgreSQL database sit in private subnets, and sign-in goes through Cognito with optional MFA. To keep the bill down I used Free Tier instance sizes, one NAT Gateway shared by both private subnets and a single ALB. The dashboard shows security events, active users and uptime.
+A remote workforce management platform: a React + TypeScript dashboard on the front, and an AWS backend built entirely in Terraform. The network follows zero-trust rules across three tiers. Only the load balancer is public; the API servers (EC2 Auto Scaling) and the PostgreSQL database sit in private subnets, and sign-in goes through Cognito with optional MFA. To keep the bill down I used Free Tier instance sizes, one NAT Gateway shared by both private subnets and a single ALB. The dashboard shows security events, active users and uptime; for now it runs on generated sample data, and wiring it to the API is the next step.
 
 ## What it does
 
@@ -58,4 +58,4 @@ The lesson: Terraform templating, TypeScript, network rules and dependencies eac
 
 ## Outcome
 
-The project shows a 3-tier, zero-trust network on AWS: only the load balancer is public, the API servers and database are private, and each tier only accepts traffic from the one before it. The cost table in the GitHub README shows where the money goes (the NAT Gateway) and what I traded for it. For production I would add Multi-AZ RDS, mandatory MFA, Secrets Manager rotation, a CPU-based scaling policy and a GitHub Actions pipeline for the Terraform.
+The project shows a 3-tier, zero-trust network on AWS: only the load balancer is public, the API servers and database are private, and each tier only accepts traffic from the one before it. The cost table in the GitHub README shows where the money goes (the NAT Gateway) and what I traded for it. Next I would connect the dashboard to the API and CloudWatch, then for production add Multi-AZ RDS, mandatory MFA, Secrets Manager rotation, a CPU-based scaling policy and a GitHub Actions pipeline for the Terraform.
