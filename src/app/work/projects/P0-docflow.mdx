@@ -20,7 +20,7 @@ team:
 
 DocFlow is a document-to-PDF web app (Word, Excel, PowerPoint, text and images to PDF, plus PDF merging) that I built and first deployed the way many small businesses do: six containers on one server with Docker Compose. I then migrated it to AWS with Terraform, the way I would for a client: designed the target architecture, moved the live data, hardened it, costed it, put monitoring on it and tested the recovery plan. The AWS environment is rebuilt from code in about 15 minutes and destroyed after every session, so there is no permanent live demo; the GitHub repo has the evidence screenshots for every phase.
 
-## Key Features
+## What it does
 
 - **Zero-data-loss migration**: 5 users, 21 conversion jobs and 21 files moved to AWS and verified automatically (users, jobs per status and every finished file compared on both sides), with about 9 minutes of downtime.
 - **Everything in Terraform**: 101 AWS resources in 7 modules plus a bootstrap layer for state, CI roles and the account-wide security services.
