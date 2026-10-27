@@ -9,7 +9,7 @@ I'm Anyasi Chineme, a cloud engineer working mainly on AWS, Terraform and CI/CD.
 | Project | What it shows | Repo |
 | --- | --- | --- |
 | DocFlow | Migrating a single-server app to ECS Fargate, RDS, S3 and SQS: 101 Terraform resources, zero-data-loss migration, security scanning, cost model, monitoring and DR drills | [docflow](https://github.com/cyberN3m3/docflow) |
-| AWS Cost Optimization Dashboard | Serverless scanner for idle and wasted resources across every region, weekly email report | [AWS-Cost-Optimization-Dashboard](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard) |
+| CostPatrol (AWS cost scanner) | Read-only weekly scan of every region for 9 kinds of waste, real prices and the bill from Cost Explorer, plain-English tickets and a PDF report ([live](https://d3tzbznu0q3ftw.cloudfront.net)) | [AWS-Cost-Optimization-Dashboard](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard) |
 | Zero-Trust Remote Workforce Platform | 3-tier VPC with private compute and database, ALB, Cognito, React + TypeScript dashboard | [remote-workforce-platform](https://github.com/cyberN3m3/remote-workforce-platform) |
 | Global Shield | Multi-region failover with CloudFront origin groups across us-east-1 and us-west-2 | [Global-Shield-Dashboard](https://github.com/cyberN3m3/Global-Shield-Dashboard) |
 | LinkSnap | Serverless URL shortener on Lambda, API Gateway and DynamoDB | [URL-SHORTNER](https://github.com/cyberN3m3/URL-SHORTNER) |
