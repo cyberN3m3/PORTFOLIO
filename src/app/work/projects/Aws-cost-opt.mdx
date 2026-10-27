@@ -1,12 +1,13 @@
 ---
-title: "AWS Cost Optimization Dashboard"
-publishedAt: "2026-03-15"
-summary: "Serverless scanner that finds idle EC2 instances, orphaned EBS volumes, and misconfigured S3 across all AWS regions, and emails a report every Monday. Found $45/yr in waste on the first run."
+title: "CostPatrol - AWS Cost Scanner with Plain-English Reports"
+publishedAt: "2026-10-23"
+summary: "A read-only AWS cost scanner that checks every enabled region each week for 9 kinds of waste, prices them with the AWS Price List API, reads the bill from Cost Explorer, and turns the findings into plain-English tickets and a PDF report. Rebuilt from an insecure first version: no public API, private reports, 22 tests in CI."
 images:
-  - "/images/projects/cost-optimizer/architecture.png"
-  - "/images/projects/cost-optimizer/dashboard1.png"
-  - "/images/projects/cost-optimizer/dashboard2.png"
-link: "http://aws-cost-opt123.s3-website-us-east-1.amazonaws.com"
+  - "/images/projects/cost-optimizer/costpatrol-home.png"
+  - "/images/projects/cost-optimizer/costpatrol-architecture.png"
+  - "/images/projects/cost-optimizer/costpatrol-tickets.png"
+  - "/images/projects/cost-optimizer/costpatrol-receipt.png"
+link: "https://d3tzbznu0q3ftw.cloudfront.net"
 team:
   - name: "Anyasi Chineme"
     role: "Cloud Engineer"
@@ -14,37 +15,41 @@ team:
     linkedIn: "https://linkedin.com/in/anyasichineme"
 ---
 
-**[→ View GitHub](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard)**  **[→ Live Dashboard](http://aws-cost-opt123.s3-website-us-east-1.amazonaws.com)**
+**[→ View GitHub](https://github.com/cyberN3m3/AWS-Cost-Optimization-Dashboard)**  **[→ Live dashboard](https://d3tzbznu0q3ftw.cloudfront.net)**
 
 ## Overview
 
-I kept seeing the same thing across AWS accounts: servers sitting idle, storage volumes nobody deleted, S3 buckets accumulating forever. AWS doesn't tell you about any of it, it just bills you. So I built a scanner that runs every Monday, checks every region, and sends a report with exactly what's being wasted and how much it costs. First time I ran it on my own account it caught a t3.micro at 0.56% average CPU for a week: $45.60 a year, doing nothing. The whole thing deploys in 45 seconds and costs $0.00/month to keep running.
+AWS doesn't warn you about the server you forgot, the disk nobody detached or the logs kept forever. It just bills you. CostPatrol checks for those things every Monday across every enabled region, works out what each one costs, and writes it up as a "ticket" in plain English that a business owner can read without knowing AWS.
+
+This is version 3 of a project I first built in March 2026. Version 1 worked, but it exposed a public API with no login: anyone with the link could run a scan of my account and read the results. It also used hard-coded prices, had 4 checks and no tests. I rebuilt it from the security up and renamed it CostPatrol.
 
 ## What it does
 
-- Scans every enabled AWS region at the same time using Python threads, so a scan finishes inside API Gateway's 29-second timeout
-- Catches idle EC2 (CPU under 5% for 7 days), unattached EBS volumes, S3 buckets with no lifecycle rules, and on-demand instances that should be on Reserved pricing
-- Each EC2 finding says what to do (stop it, downsize to a specific instance type, or investigate) and how much that saves a month
-- Sends the full report via SNS email and optionally drops a summary card into Slack on every scan
-- A live dashboard on S3 (plain HTML, no framework) runs a scan on demand from the browser and exports the report
-- The IAM role is read-only apart from `sns:Publish` on one topic, so it can't change any resource
+- **Checks every enabled region weekly**: 18 regions in about 35 seconds on my own account, with a read-only IAM role.
+- **9 kinds of waste**: idle EC2 (stop or downsize), unattached EBS volumes, gp2 volumes that can move to gp3, snapshots older than 90 days, unattached Elastic IPs, idle NAT gateways, idle load balancers, log groups that keep data forever, and S3 buckets with no lifecycle rules.
+- **Real prices and the real bill**: EC2 prices from the AWS Price List API for the exact type and region; last month's spend, the trend, the top services and AWS's forecast from Cost Explorer, plus a Savings Plan recommendation. Estimates are labelled as estimates.
+- **A ranked report**: every finding gets a monthly saving, an effort and a risk, biggest first. The report is saved as HTML and JSON to a private bucket each week and summarised by email.
+- **A dashboard for non-technical owners**: each finding is a ticket ("A server doing nothing"), a receipt adds up what fixing them saves, and you can untick anything you want to keep. **Save as PDF** turns it into a client-ready report. The report is read inside the browser and never uploaded.
+- **Client reviews without installing anything**: `scan.py` runs the same scan from a laptop through a cross-account, read-only role locked with an external ID.
 
 ## Technologies Used
 
-- **AWS Lambda**: Python 3.12, 600s timeout, concurrent scanning with `ThreadPoolExecutor`
-- **EventBridge**: weekly cron trigger, nothing to manage
-- **API Gateway v2**: HTTP API for built-in CORS and lower cost over REST API
-- **SNS**: email delivery, publish permission scoped to the specific ARN
-- **Terraform**: 14 resources, deploys and tears down cleanly
-- **boto3**: no third-party packages, Slack via `urllib.request`
-- **S3**: static website hosting for the dashboard
+- **AWS Lambda (Python 3.12) and EventBridge**: the scanner, on a weekly schedule.
+- **Cost Explorer and the Price List API**: spend, forecast, Savings Plans and prices.
+- **S3 and SNS**: private, encrypted, TLS-only reports that expire after 180 days, and the email summary.
+- **CloudFront with Origin Access Control**: HTTPS only, HSTS and a strict Content Security Policy for the dashboard.
+- **Terraform**: about 25 resources, with outputs for "run a scan now" and "download the latest report".
+- **pytest, moto and GitHub Actions**: 22 tests that fake AWS in memory, plus `terraform fmt`/`validate` and Checkov on every pull request.
+- **HTML, CSS and JavaScript**: the dashboard, with no framework and no calls to AWS.
 
 ## Challenges and Learnings
 
-Two things broke in ways that weren't obvious. The first was a 503 error that only showed up from the browser. The CLI always worked, because there's no timeout on direct Lambda invocations. API Gateway has a hard 29-second limit, and scanning the regions one at a time took longer than that. Switching to `ThreadPoolExecutor` fixed it since all the work is just waiting on API responses anyway.
+The biggest lesson was that "it works" isn't the same as "it's safe to share". Version 1's dashboard called a public `POST /scan` endpoint with open CORS and no authentication, and its URL was hard-coded in the public page. The fix wasn't to add a login: the scanner only needs to run on a schedule, so I removed the API entirely and kept on-demand scans behind my own IAM access (`aws lambda invoke`). The safest API turned out to be no API.
 
-The second was a Lambda Function URL returning 403 even though everything looked right. The problem was a state conflict: I'd made changes in the console while debugging, Terraform's state file didn't know about them, and the two got out of sync. Fixed it by dropping the Function URL entirely, going back to API Gateway, and using `terraform import` to bring the existing resources into state rather than letting Terraform try to recreate them from scratch.
+The second lesson was about trust when working in someone else's account. For client reviews I use a cross-account role with read-only permissions and an external ID, which prevents the "confused deputy" problem. I tested it the way a client would: without the external ID the role was refused, and with it, creating a bucket, reading secrets and deleting logs were all denied. The read-only scan still found exactly the same 18 findings, regions, bill and forecast as the full scanner.
+
+Checkov pushed real fixes (an abort-incomplete-uploads lifecycle rule, scoped IAM resources, a response headers policy and HSTS preload). The 24 checks I chose to skip are written next to each resource with the reason, such as no WAF for a static page that has no API.
 
 ## Outcome
 
-Runs at $0.00/month and found real waste on the first scan. The more useful angle is as a consulting tool: ask a client for read-only permissions, run `terraform apply`, and show up to the first call with actual findings already on screen. That's a different conversation than showing up with a slide deck.
+CostPatrol is something I can run for a client today: a read-only review of every region, a plain-English PDF ranked by what each fix saves, and a short walkthrough call, or a weekly install in their own account with Terraform. Running it costs about $0.16 a month in Cost Explorer API calls; everything else stays inside the free tier at one scan a week.
